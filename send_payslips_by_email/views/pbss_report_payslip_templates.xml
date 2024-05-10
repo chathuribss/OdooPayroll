@@ -87,8 +87,7 @@
                                 </td>
 
                                 <td style="font-size: 18px; font-weight: bold; color: #00A09D" id="payslip_line_total" class="text-end"><span t-esc="gross.total"
-                                                                                                                                              t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'
-                                                                                                                                              t-att-style="'color:#00A09D;' if gross.total &lt; 0 else ''"/></td>
+                                                                                                                                              t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' t-att-style="'color:#00A09D;' if gross.total &lt; 0 else ''"/></td>
                             </tr>
                         </span>
                          <tr>
@@ -144,6 +143,8 @@
                         </span>
                     </tbody>
                 </table>
+
+                <p><h5 style="text-align:center;"><i>"Your Dedication, Our Appreciation"</i></h5></p>
 
 
             </div>
