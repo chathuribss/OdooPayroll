@@ -16,10 +16,18 @@
                 style="width:100%; margin:0px auto;"
             ><tbody>
     <tr><td valign="top" style="text-align: left; font-size: 14px;">
-        Dear <t t-esc="object.name" />, a new payslip is available for you.<br /><br />
-        Please find the PDF in your employee portal.<br /><br />
-        Have a nice day,<br />
-        The HR Team
+        Dear <t t-esc="object.name" />,<br /><br />
+        I am happy to let you know that your salary for last month <br />
+        has been successfully credited to your account.<br /><br />
+
+        Your hard work and dedication to your role have not gone unnoticed, and <br />
+        we are truly proud to have you as part of our team.<br /><br />
+
+
+        I encourage you to continue your excellent work. Also, do not forget<br />
+        to invest part of your earnings for your future financial security.<br /><br />
+        Have a nice Day!<br />
+        From the HR Team.
     </td></tr>
 </tbody></table>
             </field>
