@@ -31,10 +31,6 @@
                                 <sapn> To </sapn>
                                 <span t-field="o.date_to">To</span></th>
                         </tr>
-                        <tr style="text-align:left;">
-                            <th style="font-size: 18px; font-weight: bold;">Email</th>
-                            <th><span t-field="o.employee_id.work_email"/></th>
-                        </tr>
                     </thead>
                 </table>
                 <table class="table table-sm">
