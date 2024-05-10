@@ -21,6 +21,7 @@
         "data/mail_template_employee.xml",
         "wizard/payslip_wizard.xml",
         "views/view_hr_payslip.xml",
+        "views/pbss_report_payslip_templates.xml",
         "views/view_hr_payslip_run.xml",
         "views/hr_employee_view.xml",
     ],

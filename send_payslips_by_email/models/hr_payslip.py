@@ -94,7 +94,3 @@ class ResConfigSettings(models.TransientModel):
         string="Mail Template For Employee",
         config_parameter="send_payslips_by_email.choose_mail_template_for_employee",
     )
-
-
-
-
