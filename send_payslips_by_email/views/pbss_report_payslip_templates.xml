@@ -26,10 +26,10 @@
                         </tr>
                         <tr style="text-align:left;">
                             <th style="font-size: 18px; font-weight: bold;">Period</th>
-                            <th><span t-if="o.date_from &lt; o.contract_id.date_start" t-field="o.contract_id.date_start">Start Date</span>
-                                <span t-else="" t-field="o.date_from">From</span>
-                                <span t-if="o.contract_id.date_end and o.date_to &gt; o.contract_id.date_end" t-field="o.contract_id.date_end">End Date</span>
-                                <span t-else="" t-field="o.date_to">To</span></th>
+                            <th>
+                                <span t-field="o.date_from">From</span>
+                                <sapn> To </sapn>
+                                <span t-field="o.date_to">To</span></th>
                         </tr>
                         <tr style="text-align:left;">
                             <th style="font-size: 18px; font-weight: bold;">Email</th>
