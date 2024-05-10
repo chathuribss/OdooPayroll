@@ -139,7 +139,7 @@
 
                                 <td style="font-size: 18px; font-weight: bold; color: #3E0B0B" id="payslip_line_total" class="text-end"><span t-esc="net.total"
                                                                                                                                               t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'
-                                                                                                                                              t-att-style="'color:#3E0B0B;' if basic.total &lt; 0 else ''"/></td>
+                                                                                                                                              t-att-style="'color:#3E0B0B;' if net.total &lt; 0 else ''"/></td>
                             </tr>
                         </span>
                     </tbody>
