@@ -2,14 +2,14 @@
 <odoo>
     <template id="report_payslip" inherit_id="hr_payroll.report_payslip">
         <xpath expr="//t[@t-call='web.external_layout']" position="replace">
-            <t t-call="web.external_layout">
+            <t t-call="web.basic_layout">
 
-                <!--                <div class="header">-->
-                <!--                    <div class="row">-->
-                <!--                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" width="25%" style="max-height: 260px; padding-left:10px" alt="Logo"/>-->
-                <!--                    </div>-->
-                <!--                    <div class="oe_structure"/>-->
-                <!--                </div>-->
+                <div class="header">
+                    <div class="row">
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" width="25%" style="max-height: 260px; padding-left:10px" alt="Logo"/>
+                    </div>
+                    <div class="oe_structure"/>
+                </div>
 
                 <!--                <div class="footer">-->
                 <!--                    <div class="row">-->
@@ -92,7 +92,7 @@
                                 </tr>
                             </span>
                             <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Basic Allowance')" t-as="basic">
-                                 <tr t-att-class="line_class" t-att-style="line_style" id="line_display">
+                                <tr t-att-class="line_class" t-att-style="line_style" id="line_display">
                                     <td id="payslip_line_name" style="font-size: 14px;"><span t-field="basic.name"/></td>
                                     <td id="payslip_line_total" style="font-size: 14px;" class="text-end"><span t-esc="basic.total"
                                                                                                                 t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'

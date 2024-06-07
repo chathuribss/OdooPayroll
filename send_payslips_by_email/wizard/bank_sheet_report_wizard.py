@@ -11,6 +11,8 @@ class BankSheetReportWizard(models.TransientModel):
     def generate_report(self):
         # Ensure `self.read()[0]` returns a dictionary
         struct_id = self.payslip_batch_id.slip_ids.mapped('struct_id')
+        if len(struct_id) > 1:
+            raise UserError(_("In this Batch has two Structures, You can Process Only One Structures"))
         name = ''
         if struct_id.name == 'PBSS Salary Structure':
             name = 'Salary Sheet'

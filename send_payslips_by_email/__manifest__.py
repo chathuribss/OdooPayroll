@@ -4,7 +4,7 @@
     Send Payslip By Email with pdf attchment
       """,
     "category": "Payroll",
-    "version": "17.0.0.0.0",
+    "version": "17.0.0.0.1",
     "sequence": 1,
     "author": "Perfect Business Solution Services (Pvt) Ltd",
     "license": "OPL-1",
