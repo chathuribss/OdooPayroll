@@ -11,19 +11,19 @@ class HRPayslip(models.Model):
     _name = "hr.payslip"
     _inherit = ["hr.payslip", "mail.thread", "mail.activity.mixin"]
 
-    @api.depends('employee_id', 'struct_id', 'date_from', 'date_to')
-    def _compute_name(self):
-        formated_date_cache = {}
-        for slip in self.filtered(lambda p: p.employee_id and p.date_from and p.date_to):
-            lang = slip.employee_id.lang or self.env.user.lang
-            context = {'lang': lang}
-            payslip_name = slip.struct_id.payslip_name or _('Salary Slip')
-            del context
-
-            slip.name = '%(payslip_name)s - %(dates)s' % {
-                'payslip_name': payslip_name,
-                'dates': slip._get_period_name(formated_date_cache),
-            }
+    # @api.depends('employee_id', 'struct_id', 'date_from', 'date_to')
+    # def _compute_name(self):
+    #     formated_date_cache = {}
+    #     for slip in self.filtered(lambda p: p.employee_id and p.date_from and p.date_to):
+    #         lang = slip.employee_id.lang or self.env.user.lang
+    #         context = {'lang': lang}
+    #         payslip_name = slip.struct_id.payslip_name or _('Salary Slip')
+    #         del context
+    #
+    #         slip.name = '%(payslip_name)s - %(dates)s' % {
+    #             'payslip_name': payslip_name,
+    #             'dates': slip._get_period_name(formated_date_cache),
+    #         }
 
     def payslip_send_mail(self):
         self.ensure_one()
