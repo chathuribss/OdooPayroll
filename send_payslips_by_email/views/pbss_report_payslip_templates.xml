@@ -21,12 +21,6 @@
                     <h5 id="payslip_name"><span t-field="o.name"/></h5>
                     <table class="table table-sm table-bordered">
                         <thead>
-                            <!--                        <tr>-->
-                            <!--                            <th colspan="2" style="text-align:center; background-color: #B0B6CB; font-size: 16px; font-weight: bold; color: #FFFFFF;">Supplier Details</th>-->
-                            <!--                        </tr>-->
-                            <!--                        <tr>-->
-                            <!--                            <th colspan="2" style="font-weight: bold; font-size: 16px"><span t-field="o.supplier_name.name"/></th>-->
-                            <!--                        </tr>-->
                             <tr style="text-align:left;">
                                 <th style="font-size: 14px; font-weight: bold;">Employee No</th>
                                 <th style="font-size: 14px;"><span t-field="o.employee_id.barcode"/></th>
@@ -156,23 +150,23 @@
                             <!--    <td colspan="2"/>-->
                             <!--</tr>-->
 
-                            <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net')" t-as="net">
+                            <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary')" t-as="net">
                                 <tr>
                                     <td style="font-size: 14px; font-weight: bold; color: #3E0B0B">
-                                        <span>Net Salary</span>
+                                        <span t-field="net.name"/>
                                     </td>
                                     <td style="font-size: 14px; font-weight: bold; color: #3E0B0B" id="payslip_line_total" class="text-end"><span t-esc="net.total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}" t-att-style="'color:#3E0B0B;' if net.total &lt; 0 else ''"/></td>
                                 </tr>
                             </span>
 
-                            <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Allowance')" t-as="net">
-                                <tr>
-                                    <td style="font-size: 14px; font-weight: bold; color: #3E0B0B">
-                                        <span>Net Allowance</span>
-                                    </td>
-                                    <td style="font-size: 16px; font-weight: bold; color: #3E0B0B" id="payslip_line_total" class="text-end"><span t-esc="net.total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}" t-att-style="'color:#3E0B0B;' if net.total &lt; 0 else ''"/></td>
-                                </tr>
-                            </span>
+<!--                            <span t-foreach="o.line_ids.filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Allowance')" t-as="net">-->
+<!--                                <tr>-->
+<!--                                    <td style="font-size: 14px; font-weight: bold; color: #3E0B0B">-->
+<!--                                        <span>Net Allowance</span>-->
+<!--                                    </td>-->
+<!--                                    <td style="font-size: 16px; font-weight: bold; color: #3E0B0B" id="payslip_line_total" class="text-end"><span t-esc="net.total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}" t-att-style="'color:#3E0B0B;' if net.total &lt; 0 else ''"/></td>-->
+<!--                                </tr>-->
+<!--                            </span>-->
 
                             <tr>
                                 <td style="font-size: 14px; font-weight: bold; background-color: #B0B6CB;" colspan="2"><span style="font-size: 16px; font-weight: bold; background-color: #B0B6CB;">Company Contribution</span></td>
