@@ -24,6 +24,8 @@
         "views/pbss_report_payslip_templates.xml",
         "views/view_hr_payslip_run.xml",
         "views/hr_employee_view.xml",
+        "report/bank_sheet_report_templates.xml",
+        "wizard/bank_sheet_report_wizard.xml",
     ],
     "application": True,
     "installable": True,

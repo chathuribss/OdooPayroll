@@ -9,13 +9,15 @@ class HrPayslipRun(models.Model):
     _name = "hr.payslip.run"
     _inherit = ["hr.payslip.run", "mail.thread", "mail.activity.mixin"]
 
+    def get_net_total(self):
+        net_total = sum(self.slip_ids.mapped('line_ids').filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary').mapped('amount'))
+        return net_total
+
     def action_payslip_batch_send(self):
         for rec in self.slip_ids:
             try:
-                template_id = int(
-                    rec.env["ir.config_parameter"]
-                    .sudo()
-                    .get_param("send_payslips_by_email.choose_mail_template")
+                template_id = self.env['ir.model.data']._xmlid_to_res_id(
+                    'send_payslips_by_email.mail_template_new_payslip_for_employee', raise_if_not_found=False
                 )
             except ValueError:
                 template_id = False

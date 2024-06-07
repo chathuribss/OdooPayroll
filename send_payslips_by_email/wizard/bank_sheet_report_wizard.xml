@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="bank_sheet_report_wizard_form_wizard">
+        <field name="name">bank.sheet.report.wizard.form.view</field>
+        <field name="model">bank.sheet.report.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Bank Sheet Report Wizard">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="payslip_batch_id" required="1" string="Payslip Batch"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="generate_report" type="object" string="Print Report" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_bank_sheet_report_wizard">
+        <field name="name">Bank Sheet Report Wizard</field>
+        <field name="res_model">bank.sheet.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_action_bank_sheet_report_wizard" name="Bank Sheet"  parent="hr_payroll.menu_report_payroll" sequence="25" action="action_bank_sheet_report_wizard" />
+</odoo>
