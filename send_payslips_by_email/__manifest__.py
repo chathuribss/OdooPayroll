@@ -26,6 +26,7 @@
         "views/hr_employee_view.xml",
         "report/bank_sheet_report_templates.xml",
         "wizard/bank_sheet_report_wizard.xml",
+        'wizard/payslip_batch_wizard.xml',
     ],
     "application": True,
     "installable": True,

@@ -11,6 +11,11 @@ class HRPayslip(models.Model):
     _name = "hr.payslip"
     _inherit = ["hr.payslip", "mail.thread", "mail.activity.mixin"]
 
+    def get_salary_line_total(self, name):
+        self.ensure_one()
+        salary_lines = self.env['hr.payslip.line'].search([('slip_id', '=', self.id), ('name', '=', name)])
+        return sum(line.total for line in salary_lines)
+
     # @api.depends('employee_id', 'struct_id', 'date_from', 'date_to')
     # def _compute_name(self):
     #     formated_date_cache = {}

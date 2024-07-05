@@ -1,0 +1,28 @@
+<!-- wizard_view.xml -->
+<odoo>
+    <record id="view_payslip_batch_wizard_form" model="ir.ui.view">
+        <field name="name">payslip.batch.wizard.form</field>
+        <field name="model">payslip.batch.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Payslip Batch Wizard">
+                <group>
+                    <field name="batch_id"/>
+                </group>
+                <footer>
+                    <button string="Print Report" type="object" name="print_report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_payslip_batch_wizard" model="ir.actions.act_window">
+        <field name="name">Payslip Batch Wizard</field>
+        <field name="res_model">payslip.batch.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_payslip_batch_wizard" name="Payslip Batch Report"
+              parent="hr_payroll.menu_report_payroll" action="action_payslip_batch_wizard"/>
+</odoo>
