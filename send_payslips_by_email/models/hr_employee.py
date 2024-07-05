@@ -1,8 +1,11 @@
-from odoo import _, models
+from odoo import _, models, fields
 
 
 class Employee(models.Model):
     _inherit = "hr.employee"
+
+    nic = fields.Char(string="NIC")
+    slip_password = fields.Boolean(string="Slip Password Projection", default=True)
 
     def action_send_payslips(self):
         return {
