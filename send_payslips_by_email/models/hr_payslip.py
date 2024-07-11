@@ -88,9 +88,7 @@ class HRPayslip(models.Model):
     def send_payslip_by_email_action(self):
         for rec in self:
             try:
-                template_id = self.env['ir.model.data']._xmlid_to_res_id(
-                    'send_payslips_by_email.mail_template_new_payslip_for_employees', raise_if_not_found=False
-                )
+                template_id = self.env.ref('send_payslips_by_email.mail_template_new_payslip_for_employees').id
             except ValueError:
                 template_id = False
             if not template_id:
