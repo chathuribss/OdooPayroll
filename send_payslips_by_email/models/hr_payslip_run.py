@@ -9,6 +9,55 @@ class HrPayslipRun(models.Model):
     _name = "hr.payslip.run"
     _inherit = ["hr.payslip.run", "mail.thread", "mail.activity.mixin"]
 
+    def get_slip_chunks(self):
+        """ Returns a list of slip chunks, each with a page total, and a grand total """
+        slip_ids = self.slip_ids.filtered(
+            lambda slip: sum(
+                slip.line_ids.filtered(
+                    lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
+                ).mapped('total')
+            ) > 0
+        )
+        chunk_size = 15
+        chunks = [slip_ids[i:i + chunk_size] for i in range(0, len(slip_ids), chunk_size)]
+
+        grand_total = 0
+        chunk_data = []
+
+        for chunk in chunks:
+            page_total = 0
+            for doc in chunk:
+                net_totals = doc.line_ids.filtered(
+                    lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
+                ).mapped('total')
+                page_total += sum(net_totals)
+
+            grand_total += page_total
+            chunk_data.append({
+                'slips': chunk,
+                'page_total': page_total,
+            })
+
+        return chunk_data, grand_total
+
+    def get_grand_total(self):
+        """ Calculate the grand total for all slips """
+        grand_total = 0
+        for doc in self.slip_ids.filtered(
+            lambda slip: sum(
+                slip.line_ids.filtered(
+                    lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
+                ).mapped('total')
+            ) > 0
+        ):
+            net_totals = doc.line_ids.filtered(
+                lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
+            ).mapped('total')
+            grand_total += sum(net_totals)
+        return grand_total
+
+
+
     def get_net_total(self):
         net_total = sum(self.slip_ids.mapped('line_ids').filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary').mapped('amount'))
         return net_total

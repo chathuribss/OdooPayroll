@@ -1,6 +1,12 @@
 from odoo import _, models, fields
 
 
+class Contact(models.Model):
+    _inherit = "hr.contract"
+
+    batch_number = fields.Char(string="Badge ID", related="employee_id.barcode", store=True)
+
+
 class Employee(models.Model):
     _inherit = "hr.employee"
 
