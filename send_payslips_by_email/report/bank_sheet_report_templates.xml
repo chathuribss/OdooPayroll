@@ -41,6 +41,9 @@
                                         <td style="text-align:center;"><span t-field="doc.employee_id.display_name"/></td>
                                         <td style="text-align:center;"><span t-field="doc.employee_id.x_studio_nic"/></td>
 
+                                        <t t-if="docs.slip_ids[0].struct_id.name == 'PBSS Allowance Structure'">
+                                        </t>
+
                                         <t t-if="doc.employee_id.x_studio_allowance_savings_account_number">
                                             <td style="text-align:center;"><span t-field="doc.employee_id.x_studio_allowance_savings_account_number"/></td>
                                         </t>
