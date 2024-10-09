@@ -40,7 +40,14 @@
                                         <td style="text-align:center;"><span t-field="doc.employee_id.barcode"/></td>
                                         <td style="text-align:center;"><span t-field="doc.employee_id.display_name"/></td>
                                         <td style="text-align:center;"><span t-field="doc.employee_id.x_studio_nic"/></td>
-                                        <td style="text-align:center;"><span t-field="doc.employee_id.x_studio_savings_account_number"/></td>
+
+                                        <t t-if="doc.employee_id.x_studio_allowance_savings_account_number">
+                                            <td style="text-align:center;"><span t-field="doc.employee_id.x_studio_allowance_savings_account_number"/></td>
+                                        </t>
+                                        <t t-else="">
+                                            <td style="text-align:center;"><span t-field="doc.employee_id.x_studio_savings_account_number"/></td>
+                                        </t>
+
                                         <td style="text-align:right;">
                                             <t t-foreach="doc.line_ids.filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary')" t-as="net">
                                                 <span t-esc="net.total" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}' t-att-style="'color:#875A7B;' if net.total &lt; 0 else ''"/>
