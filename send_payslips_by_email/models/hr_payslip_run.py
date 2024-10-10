@@ -11,7 +11,8 @@ class HrPayslipRun(models.Model):
 
     def get_slip_chunks(self):
         """ Returns a list of slip chunks, each with a page total, and a grand total """
-        slip_ids = self.slip_ids.filtered(
+        active_slip_ids = self.slip_ids.filtered(lambda x:x.contract_id.state not in ['draft', 'new', 'cancel'])
+        slip_ids = active_slip_ids.filtered(
             lambda slip: sum(
                 slip.line_ids.filtered(
                     lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
@@ -43,7 +44,8 @@ class HrPayslipRun(models.Model):
     def get_grand_total(self):
         """ Calculate the grand total for all slips """
         grand_total = 0
-        for doc in self.slip_ids.filtered(
+        active_slip_ids = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
+        for doc in active_slip_ids.filtered(
             lambda slip: sum(
                 slip.line_ids.filtered(
                     lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
@@ -59,11 +61,13 @@ class HrPayslipRun(models.Model):
 
 
     def get_net_total(self):
-        net_total = sum(self.slip_ids.mapped('line_ids').filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary').mapped('amount'))
+        active_slip_ids = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
+        net_total = sum(active_slip_ids.mapped('line_ids').filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary').mapped('amount'))
         return net_total
 
     def action_payslip_batch_send(self):
-        for rec in self.slip_ids:
+        active_slip_ids = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
+        for rec in active_slip_ids:
             try:
                 template_id = self.env['ir.model.data']._xmlid_to_res_id(
                     'send_payslips_by_email.mail_template_new_payslip_for_employee', raise_if_not_found=False
