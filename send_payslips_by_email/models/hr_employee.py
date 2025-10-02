@@ -13,6 +13,16 @@ class Employee(models.Model):
     nic = fields.Char(string="NIC")
     slip_password = fields.Boolean(string="Slip Password Projection", default=True)
 
+    emp_type = fields.Selection(
+        [
+            ("executive", "Executive Level"),
+            ("cluster_pm", "Cluster Managers & Project Managers"),
+            ("hod", "HOD Team"),
+            ("top_mgmt", "Top Management"),
+        ],
+        string="Employee Type",
+    )
+
     def action_send_payslips(self):
         return {
             "name": _("Payslips"),

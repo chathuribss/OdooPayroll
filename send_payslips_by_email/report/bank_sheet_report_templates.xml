@@ -4,21 +4,32 @@
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page">
-                    <t t-if="docs.slip_ids[0].struct_id.name == 'PBSS Salary Structure'">
+                    <t t-if="docs.slip_ids and docs.slip_ids[0].struct_id.name == 'PBSS Salary Structure'">
                         <center>
                             <h3>
-                                <td colspan="8" style="text-align: center;">Salary Sheet<br></br></td>
+                                <td colspan="8" style="text-align: center;">Salary Sheet<br/></td>
                             </h3>
                         </center><br/>
                     </t>
-                    <t t-if="docs.slip_ids[0].struct_id.name == 'PBSS Allowance Structure'">
+
+                    <t t-if="docs.slip_ids and docs.slip_ids[0].struct_id.name == 'PBSS Allowance Structure'">
                         <center>
                             <h3>
-                                <td colspan="8" style="text-align: center;">Allowance Sheet<br></br></td>
+                                <td colspan="8" style="text-align: center;">Allowance Sheet<br/></td>
                             </h3>
                         </center><br/>
                     </t>
+
                     <h4><span t-field="docs.name"/></h4>
+                    <t t-if="docs.env.context.get('emp_type')">
+                        <h5>
+                            Employee Type:
+                            <t t-if="docs.env.context.get('emp_type') == 'executive'">Executive Level</t>
+                            <t t-if="docs.env.context.get('emp_type') == 'cluster_pm'">Cluster Managers and Project Managers</t>
+                            <t t-if="docs.env.context.get('emp_type') == 'hod'">HOD Team</t>
+                            <t t-if="docs.env.context.get('emp_type') == 'top_mgmt'">Top Management</t>
+                        </h5>
+                    </t>
 
                     <!-- Loop through the chunks (each containing 15 records max) -->
                     <t t-foreach="docs.get_slip_chunks()[0]" t-as="chunk">

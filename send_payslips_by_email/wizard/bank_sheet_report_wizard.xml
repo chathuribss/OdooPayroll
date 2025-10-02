@@ -10,6 +10,7 @@
                     <group>
                         <group>
                             <field name="payslip_batch_id" required="1" string="Payslip Batch"/>
+                            <field name="emp_type"/>
                         </group>
                     </group>
                 </sheet>

@@ -6,13 +6,18 @@ from odoo.exceptions import UserError
 
 
 class HrPayslipRun(models.Model):
-    _name = "hr.payslip.run"
-    _inherit = ["hr.payslip.run", "mail.thread", "mail.activity.mixin"]
+    _inherit = "hr.payslip.run"
+
+    def _get_filtered_slips(self):
+        """Helper: return filtered slips based on wizard emp_type if passed via data context"""
+        active_slips = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
+        emp_type = self.env.context.get('emp_type') or (self._context.get('params', {}) or {}).get('emp_type')
+        if emp_type:
+            active_slips = active_slips.filtered(lambda s: s.employee_id.emp_type == emp_type)
+        return active_slips
 
     def get_slip_chunks(self):
-        """ Returns a list of slip chunks, each with a page total, and a grand total """
-        active_slip_ids = self.slip_ids.filtered(lambda x:x.contract_id.state not in ['draft', 'new', 'cancel'])
-        slip_ids = active_slip_ids.filtered(
+        slip_ids = self._get_filtered_slips().filtered(
             lambda slip: sum(
                 slip.line_ids.filtered(
                     lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
@@ -24,46 +29,30 @@ class HrPayslipRun(models.Model):
 
         grand_total = 0
         chunk_data = []
-
         for chunk in chunks:
-            page_total = 0
-            for doc in chunk:
-                net_totals = doc.line_ids.filtered(
-                    lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
-                ).mapped('total')
-                page_total += sum(net_totals)
-
+            page_total = sum(
+                sum(doc.line_ids.filtered(lambda l: l.appears_on_payslip and l.category_id.name == 'Net Salary').mapped('total'))
+                for doc in chunk
+            )
             grand_total += page_total
             chunk_data.append({
                 'slips': chunk,
                 'page_total': page_total,
             })
-
         return chunk_data, grand_total
 
     def get_grand_total(self):
-        """ Calculate the grand total for all slips """
-        grand_total = 0
-        active_slip_ids = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
-        for doc in active_slip_ids.filtered(
-            lambda slip: sum(
-                slip.line_ids.filtered(
-                    lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
-                ).mapped('total')
-            ) > 0
-        ):
-            net_totals = doc.line_ids.filtered(
-                lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary'
-            ).mapped('total')
-            grand_total += sum(net_totals)
-        return grand_total
-
-
+        return sum(
+            sum(doc.line_ids.filtered(lambda l: l.appears_on_payslip and l.category_id.name == 'Net Salary').mapped('total'))
+            for doc in self._get_filtered_slips()
+        )
 
     def get_net_total(self):
-        active_slip_ids = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
-        net_total = sum(active_slip_ids.mapped('line_ids').filtered(lambda line: line.appears_on_payslip and line.category_id.name == 'Net Salary').mapped('amount'))
-        return net_total
+        return sum(
+            self._get_filtered_slips().mapped('line_ids')
+            .filtered(lambda l: l.appears_on_payslip and l.category_id.name == 'Net Salary')
+            .mapped('amount')
+        )
 
     def action_payslip_batch_send(self):
         active_slip_ids = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
@@ -98,3 +87,4 @@ class HrPayslipRun(models.Model):
             "simple_notification",
             {"title": _("Notification"), "message": message, "sticky": False},
         )
+
