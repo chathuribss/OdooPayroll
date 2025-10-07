@@ -1,7 +1,7 @@
 import base64
 import re
 
-from odoo import _, models
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
