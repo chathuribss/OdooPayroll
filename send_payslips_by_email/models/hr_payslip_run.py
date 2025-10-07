@@ -89,8 +89,8 @@ class HrPayslipRun(models.Model):
         )
 
     def get_report_filename(self):
-        """Override this method to set custom filename for bank sheet report"""
-        # Check if this is called from our specific report
+        """Custom method to set filename for bank sheet report"""
+        # Check if this is called from our specific report with emp_type context
         if self.env.context.get('emp_type'):
             emp_type = self.env.context.get('emp_type')
             emp_label = {
@@ -104,7 +104,9 @@ class HrPayslipRun(models.Model):
             prefix = "Allowance Sheet" if 'Allowance' in struct_name else "Salary Sheet"
 
             filename = f"{prefix} {emp_label} {self.name or ''}"
+            # Clean filename and return
             return "".join(c for c in filename if c.isalnum() or c in (' ', '-', '_')).rstrip()
 
-        return super().get_report_filename()
+        # Fallback to default naming for other reports
+        return f"Bank Sheet {self.name or ''}"
 
