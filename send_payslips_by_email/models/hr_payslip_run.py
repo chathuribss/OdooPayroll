@@ -8,6 +8,8 @@ from odoo.exceptions import UserError
 class HrPayslipRun(models.Model):
     _inherit = "hr.payslip.run"
 
+    report_name_val = fields.Char()
+
     def _get_filtered_slips(self):
         """Helper: return filtered slips based on wizard emp_type if passed via data context"""
         active_slips = self.slip_ids.filtered(lambda x: x.contract_id.state not in ['draft', 'new', 'cancel'])
@@ -90,9 +92,10 @@ class HrPayslipRun(models.Model):
 
     def get_report_filename(self):
         """Custom method to set filename for bank sheet report"""
-        # Check if this is called from our specific report with emp_type context
-        if self.env.context.get('emp_type'):
-            emp_type = self.env.context.get('emp_type')
+        # Check if we have emp_type stored on the record or in context
+        emp_type = self.report_name_val or self.env.context.get('emp_type')
+
+        if emp_type:
             emp_label = {
                 'executive': 'Executive Level',
                 'cluster_pm': 'Cluster Managers and Project Managers',

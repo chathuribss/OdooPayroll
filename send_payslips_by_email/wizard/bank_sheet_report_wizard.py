@@ -20,6 +20,9 @@ class BankSheetReportWizard(models.TransientModel):
             raise UserError(_("This Batch has two Structures. You can Process Only One Structure"))
 
         # add emp_type into context
+        self.payslip_batch_id.update({
+            'report_name_val': self.emp_type
+        })
         return self.env.ref('send_payslips_by_email.bank_sheet_report_action').with_context(
             emp_type=self.emp_type
         ).report_action(self.payslip_batch_id.id)
