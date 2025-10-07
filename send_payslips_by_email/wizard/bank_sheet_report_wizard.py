@@ -19,8 +19,9 @@ class BankSheetReportWizard(models.TransientModel):
         if len(struct_ids) > 1:
             raise UserError(_("This Batch has two Structures. You can Process Only One Structure"))
 
-        # add emp_type into context
-        return self.env.ref('send_payslips_by_email.bank_sheet_report_action').with_context(
-            emp_type=self.emp_type
-        ).report_action(self.payslip_batch_id.id)
+        # ✅ Correct way to attach context to report action
+        action = self.env.ref('send_payslips_by_email.bank_sheet_report_action').report_action(self.payslip_batch_id)
+        action['context'] = dict(self.env.context, emp_type=self.emp_type)
+        return action
+
 
