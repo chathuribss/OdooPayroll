@@ -107,27 +107,24 @@
         <field name="report_name">send_payslips_by_email.bank_sheet_report_template</field>
         <field name="report_file">send_payslips_by_email.bank_sheet_report_template</field>
         <field name="print_report_name"><![CDATA[
-(
-    'Salary Sheet %s %s.pdf' % (
-        (object.env.context.get('emp_type') == 'executive' and 'Executive Level') or
-        (object.env.context.get('emp_type') == 'cluster_pm' and 'Cluster Managers and Project Managers') or
-        (object.env.context.get('emp_type') == 'hod' and 'HOD Team') or
-        (object.env.context.get('emp_type') == 'top_mgmt' and 'Top Management') or
-        'All Employees',
-        object.name
-    )
-) if (object.slip_ids and object.slip_ids[0].struct_id.name == 'PBSS Salary Structure')
-else (
-    'Allowance Sheet %s %s.pdf' % (
-        (object.env.context.get('emp_type') == 'executive' and 'Executive Level') or
-        (object.env.context.get('emp_type') == 'cluster_pm' and 'Cluster Managers and Project Managers') or
-        (object.env.context.get('emp_type') == 'hod' and 'HOD Team') or
-        (object.env.context.get('emp_type') == 'top_mgmt' and 'Top Management') or
-        'All Employees',
-        object.name
-    )
-)
+('Salary Sheet %s %s.pdf' % (
+    ((object.env.context.get('emp_type') == 'executive' and 'Executive Level') or
+     (object.env.context.get('emp_type') == 'cluster_pm' and 'Cluster Managers and Project Managers') or
+     (object.env.context.get('emp_type') == 'hod' and 'HOD Team') or
+     (object.env.context.get('emp_type') == 'top_mgmt' and 'Top Management') or
+     'All Employees'),
+    object.name
+)) if (object.slip_ids and object.slip_ids[0].struct_id.name == 'PBSS Salary Structure') else (
+'Allowance Sheet %s %s.pdf' % (
+    ((object.env.context.get('emp_type') == 'executive' and 'Executive Level') or
+     (object.env.context.get('emp_type') == 'cluster_pm' and 'Cluster Managers and Project Managers') or
+     (object.env.context.get('emp_type') == 'hod' and 'HOD Team') or
+     (object.env.context.get('emp_type') == 'top_mgmt' and 'Top Management') or
+     'All Employees'),
+    object.name
+))
 ]]></field>
+
 
     </record>
 </odoo>
