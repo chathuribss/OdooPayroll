@@ -103,10 +103,7 @@ class HrPayslipRun(models.Model):
                 'top_mgmt': 'Top Management'
             }.get(emp_type, 'All Employees')
 
-            struct_name = self.slip_ids[:1].struct_id.name or ''
-            prefix = "Allowance Sheet" if 'Allowance' in struct_name else "Salary Sheet"
-
-            filename = f"{prefix} {emp_label} {self.name or ''}"
+            filename = f"{emp_label} {self.name or ''}"
             # Clean filename and return
             return "".join(c for c in filename if c.isalnum() or c in (' ', '-', '_')).rstrip()
 
