@@ -88,3 +88,23 @@ class HrPayslipRun(models.Model):
             {"title": _("Notification"), "message": message, "sticky": False},
         )
 
+    def get_report_filename(self):
+        """Override this method to set custom filename for bank sheet report"""
+        # Check if this is called from our specific report
+        if self.env.context.get('emp_type'):
+            emp_type = self.env.context.get('emp_type')
+            emp_label = {
+                'executive': 'Executive Level',
+                'cluster_pm': 'Cluster Managers and Project Managers',
+                'hod': 'HOD Team',
+                'top_mgmt': 'Top Management'
+            }.get(emp_type, 'All Employees')
+
+            struct_name = self.slip_ids[:1].struct_id.name or ''
+            prefix = "Allowance Sheet" if 'Allowance' in struct_name else "Salary Sheet"
+
+            filename = f"{prefix} {emp_label} {self.name or ''}"
+            return "".join(c for c in filename if c.isalnum() or c in (' ', '-', '_')).rstrip()
+
+        return super().get_report_filename()
+
