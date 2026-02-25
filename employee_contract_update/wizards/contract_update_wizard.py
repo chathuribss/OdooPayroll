@@ -50,14 +50,17 @@ class ContractUpdateWizard(models.TransientModel):
                         raise UserError(f"Multiple running contracts for {emp.name}, please resolve manually.")
 
                     contract = contracts[0]
+                    minutes = 0
+                    if record.get('lm', '') > 100:
+                        minutes = record.get('lm', '') - 100
                     if emp.x_studio_contracts_interns_others:
                         contract.update({
-                            'x_studio_late_attendance_minutes': record.get('lm', ''),
+                            'x_studio_late_attendance_minutes_2': minutes,
                             'x_studio_no_pay_day_count': record.get('npd', ''),
                         })
                     else:
                         contract.update({
-                            'x_studio_late_attendance_minutes': record.get('lm', ''),
+                            'x_studio_late_attendance_minutes_2': minutes,
                             'x_studio_no_pay_day_count': record.get('npd', ''),
                         })
 
