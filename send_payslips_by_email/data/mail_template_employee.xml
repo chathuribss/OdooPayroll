@@ -44,25 +44,21 @@
             <table border="0" cellpadding="0" cellspacing="0" style="width:100%; margin:0px auto;"><tbody>
                 <tr><td valign="top" style="text-align: left; font-size: 14px;">
                     Dear <t t-esc="object.employee_id.name"></t>,<br /><br />
-                    I am happy to let you know that your salary for last month <br />
-                    has been successfully credited to your account.<br /><br />
+                    I am pleased to inform you that your salary for the previous month has been successfully credited to your account.<br /><br />
 
-                    Your hard work and dedication to your role have not gone unnoticed, and <br />
-                    we are truly proud to have you as part of our team.<br /><br />
+                    Your hard work, dedication, and commitment to your role have not gone unnoticed, and we are truly proud to have you as part of our team.
+                    At PBSS Group, we strongly believe in our People First Culture, where we value and appreciate the contribution of every employee.<br /><br />
 
+                    I encourage you to continue your excellent work and commitment towards achieving greater success. Also, do not forget to invest a part of your earnings
+                    for your future financial security, as we believe it is an important step towards long-term financial wellbeing.<br /><br />
 
-                    I encourage you to continue your excellent work. Also, do not forget<br />
-                    to invest part of your earnings for your future financial security.<br /><br />
+                    <span style="background-color: #FFF033 ;">For security purposes and to protect confidential information, please enter the last four digits of your National Identity Card (NIC) number to access your attached payslip.</span><br /><br />
 
+                    <span style="background-color: #FFF033 ;">For example, if your NIC number is 796470125V, kindly enter the last four digits "0125" to proceed.</span><br /><br />
 
-                    <span style="background-color: #FFF033 ;">For security purposes and to protect confidential information, please enter the <br />
-                        last four digits of your National Identification Card (NIC) to access your attached payslip.</span><br /><br />
-
-                    <span style="background-color: #FFF033 ;">For example, if your NIC number is 796470125V, <br />
-                        kindly enter the last four digits 0125 to proceed..</span><br /><br />
-
-                    Have a nice Day!<br />
-                    From the HR Team.
+                    Have a wonderful day!<br />
+                    Warm Regards,<br />
+                    HR Team
 
 
                 </td></tr>
