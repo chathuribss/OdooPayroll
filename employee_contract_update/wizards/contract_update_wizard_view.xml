@@ -1,0 +1,41 @@
+<odoo>
+    <record id="view_contract_update_wizard_form" model="ir.ui.view">
+        <field name="name">contract.update.wizard.form</field>
+        <field name="model">contract.update.wizard</field>
+        <field name="arch" type="xml">
+
+            <form string="Update Employee Contracts">
+                <sheet>
+                    <group>
+                        <gorup>
+                            <field name="month"/>
+                        </gorup>
+                    </group>
+                    <footer>
+                        <button string="Update" type="object" name="update_contracts" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+    <record id="action_contract_update_wizard" model="ir.actions.act_window">
+        <field name="name">Update Employee Contracts</field>
+        <field name="res_model">contract.update.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <odoo>
+        <menuitem
+                id="menu_contract_update"
+                name="Update Contract"
+                action="action_contract_update_wizard"
+                parent="hr_payroll.menu_hr_payroll_employees_root"
+                sequence="35"/>
+
+    </odoo>
+
+</odoo>
