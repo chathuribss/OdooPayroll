@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_employee_view_form_salary_distribution" model="ir.ui.view">
+        <field name="name">hr.employee.form.salary.distribution</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="salary_distribution" string="Salary Distribution" groups="hr.group_hr_user">
+                    <div class="alert alert-info mb-3" role="status">
+                        Define the departments that share this employee's salary cost.
+                        The remaining percentage stays with the employee's own department.
+                    </div>
+                    <field name="salary_distribution_ids">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="department_id" options="{'no_create': True}"/>
+                            <field name="percentage" sum="Total"/>
+                        </tree>
+                    </field>
+                    <group class="mt-3">
+                        <group>
+                            <field name="salary_distributed_percentage"/>
+                            <field name="salary_home_percentage" decoration-danger="salary_home_percentage &lt; 0" class="fw-bold"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_employee_salary_distribution_view_tree" model="ir.ui.view">
+        <field name="name">hr.employee.salary.distribution.tree</field>
+        <field name="model">hr.employee.salary.distribution</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="department_id" options="{'no_create': True}"/>
+                <field name="percentage" sum="Total"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_employee_salary_distribution_view_search" model="ir.ui.view">
+        <field name="name">hr.employee.salary.distribution.search</field>
+        <field name="model">hr.employee.salary.distribution</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hr_employee_salary_distribution" model="ir.actions.act_window">
+        <field name="name">Employee Allocations</field>
+        <field name="res_model">hr.employee.salary.distribution</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_group_employee': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No salary allocation defined</p>
+            <p>Open an employee and use the <b>Salary Distribution</b> tab, or add the lines here:
+                e.g. a driver charged 10% to IT and Cloud and 20% to Development.</p>
+        </field>
+    </record>
+</odoo>

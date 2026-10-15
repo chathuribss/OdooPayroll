@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="menu_salary_distribution_root"
+              name="Distribution"
+              web_icon="salary_distribution,static/description/icon.png"
+              groups="hr_payroll.group_hr_payroll_user"
+              sequence="76"/>
+
+    <menuitem id="menu_salary_distribution"
+              name="Distributions"
+              parent="menu_salary_distribution_root"
+              action="action_salary_distribution"
+              sequence="10"/>
+
+    <menuitem id="menu_salary_distribution_analysis"
+              name="Analysis"
+              parent="menu_salary_distribution_root"
+              action="action_salary_distribution_line"
+              sequence="20"/>
+
+    <menuitem id="menu_salary_distribution_employee"
+              name="Employee Allocations"
+              parent="menu_salary_distribution_root"
+              action="action_hr_employee_salary_distribution"
+              sequence="30"/>
+
+    <menuitem id="menu_salary_distribution_config"
+              name="Configuration"
+              parent="menu_salary_distribution_root"
+              sequence="90"/>
+
+    <menuitem id="menu_salary_distribution_rules"
+              name="Salary Rule Accounts"
+              parent="menu_salary_distribution_config"
+              action="action_salary_rule_distribution"
+              sequence="10"/>
+
+    <menuitem id="menu_salary_distribution_departments"
+              name="Department Codes"
+              parent="menu_salary_distribution_config"
+              action="action_department_distribution_codes"
+              sequence="20"/>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_department_view_form_salary_distribution" model="ir.ui.view">
+        <field name="name">hr.department.form.salary.distribution</field>
+        <field name="model">hr.department</field>
+        <field name="inherit_id" ref="hr.view_department_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group" position="after">
+                <group string="Salary Distribution" name="salary_distribution" groups="hr_payroll.group_hr_payroll_user">
+                    <group>
+                        <field name="dist_project_code" placeholder="e.g. ADMIN"/>
+                        <field name="dist_sbu_code" placeholder="e.g. 0010"/>
+                    </group>
+                    <group>
+                        <field name="dist_gl_code" placeholder="e.g. 105618"/>
+                        <field name="dist_gl_name" placeholder="e.g. PBSS SMB (Pvt) Ltd"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_department_view_tree_salary_distribution" model="ir.ui.view">
+        <field name="name">hr.department.tree.salary.distribution</field>
+        <field name="model">hr.department</field>
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="0">
+                <field name="name" readonly="1"/>
+                <field name="parent_id" readonly="1" optional="hide"/>
+                <field name="dist_project_code"/>
+                <field name="dist_sbu_code"/>
+                <field name="dist_gl_code"/>
+                <field name="dist_gl_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_department_distribution_codes" model="ir.actions.act_window">
+        <field name="name">Department Codes</field>
+        <field name="res_model">hr.department</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="hr_department_view_tree_salary_distribution"/>
+    </record>
+</odoo>

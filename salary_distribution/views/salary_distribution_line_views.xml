@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="salary_distribution_line_view_tree" model="ir.ui.view">
+        <field name="name">salary.distribution.line.tree</field>
+        <field name="model">salary.distribution.line</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0" decoration-info="is_reallocated">
+                <field name="distribution_id" optional="hide"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="home_department_id"/>
+                <field name="department_id"/>
+                <field name="salary_rule_id"/>
+                <field name="category_id" optional="hide"/>
+                <field name="dist_type" widget="badge"
+                       decoration-success="dist_type == 'earning'" decoration-danger="dist_type == 'deduction'"/>
+                <field name="percentage"/>
+                <field name="is_reallocated" optional="show"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="salary_distribution_line_view_pivot" model="ir.ui.view">
+        <field name="name">salary.distribution.line.pivot</field>
+        <field name="model">salary.distribution.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Salary Distribution" display_quantity="0" sample="1">
+                <field name="dist_type" type="row"/>
+                <field name="salary_rule_id" type="row"/>
+                <field name="department_id" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="salary_distribution_line_view_graph" model="ir.ui.view">
+        <field name="name">salary.distribution.line.graph</field>
+        <field name="model">salary.distribution.line</field>
+        <field name="arch" type="xml">
+            <graph string="Salary Distribution" type="bar" stacked="1" sample="1">
+                <field name="department_id"/>
+                <field name="salary_rule_id"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="salary_distribution_line_view_search" model="ir.ui.view">
+        <field name="name">salary.distribution.line.search</field>
+        <field name="model">salary.distribution.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="home_department_id"/>
+                <field name="salary_rule_id"/>
+                <field name="distribution_id"/>
+                <field name="batch_id"/>
+                <filter name="earning" string="Earnings" domain="[('dist_type', '=', 'earning')]"/>
+                <filter name="deduction" string="Deductions" domain="[('dist_type', '=', 'deduction')]"/>
+                <separator/>
+                <filter name="reallocated" string="Re-allocated" domain="[('is_reallocated', '=', True)]"/>
+                <separator/>
+                <filter name="period" string="Period" date="date_end"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_rule" string="Salary Rule" context="{'group_by': 'salary_rule_id'}"/>
+                    <filter name="group_department" string="Charged Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_home_department" string="Employee Department" context="{'group_by': 'home_department_id'}"/>
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'dist_type'}"/>
+                    <filter name="group_distribution" string="Distribution" context="{'group_by': 'distribution_id'}"/>
+                    <filter name="group_period" string="Period" context="{'group_by': 'date_end:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_salary_distribution_line" model="ir.actions.act_window">
+        <field name="name">Distribution Analysis</field>
+        <field name="res_model">salary.distribution.line</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="search_view_id" ref="salary_distribution_line_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No distribution computed yet</p>
+            <p>Create a distribution, select a payslip batch and click <b>Compute</b>.</p>
+        </field>
+    </record>
+
+    <record id="salary_distribution_journal_view_tree" model="ir.ui.view">
+        <field name="name">salary.distribution.journal.tree</field>
+        <field name="model">salary.distribution.journal</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0" decoration-bf="is_payable">
+                <field name="sequence" column_invisible="True"/>
+                <field name="salary_rule_id"/>
+                <field name="gl_code"/>
+                <field name="gl_name"/>
+                <field name="debit" sum="Total Debit"/>
+                <field name="credit" sum="Total Credit"/>
+                <field name="remarks"/>
+                <field name="project_code"/>
+                <field name="sbu_code"/>
+                <field name="is_payable" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

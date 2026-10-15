@@ -1,0 +1,162 @@
+.o_sd_report {
+    width: 100%;
+
+    .o_sd_cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 8px 0 20px;
+    }
+    .o_sd_card {
+        flex: 1 1 170px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border: 1px solid $border-color;
+        border-left-width: 5px;
+        background-color: $o-view-background-color;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+        > .fa {
+            font-size: 22px;
+            width: 42px;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            border-radius: 50%;
+            color: #fff;
+        }
+        .o_sd_card_value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .o_sd_card_label {
+            color: $text-muted;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+    }
+    @each $name, $color in (blue: #2e86de, purple: #714b67, green: #20a464, red: #d9534f, orange: #f0932b) {
+        .o_sd_card_#{$name} {
+            border-left-color: $color;
+            > .fa { background-color: $color; }
+        }
+    }
+
+    .o_sd_title {
+        margin: 18px 0 10px;
+        font-weight: 600;
+        small { color: $text-muted; font-weight: 400; }
+    }
+    .o_sd_scroll {
+        overflow-x: auto;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+    }
+    .o_sd_table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.9rem;
+
+        th, td {
+            padding: 7px 12px;
+            white-space: nowrap;
+            border-bottom: 1px solid $border-color;
+            text-align: right;
+        }
+        th:first-child, td:first-child { text-align: left; }
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #714b67;
+            color: #fff;
+            font-weight: 600;
+            z-index: 1;
+        }
+        tbody tr:hover td { background-color: rgba(113, 75, 103, 0.06); }
+        .o_sd_sticky {
+            position: sticky;
+            left: 0;
+            background-color: $o-view-background-color;
+            font-weight: 500;
+            z-index: 2;
+        }
+        thead .o_sd_sticky { background-color: #714b67; z-index: 3; }
+        .o_sd_total_col { font-weight: 700; background-color: rgba(113, 75, 103, 0.06); }
+        .o_sd_section td {
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-size: 0.8rem;
+        }
+        .o_sd_section_earning td { background-color: rgba(32, 164, 100, 0.12); color: #13804b; }
+        .o_sd_section_deduction td { background-color: rgba(217, 83, 79, 0.12); color: #b53a36; }
+        .o_sd_subtotal td { font-weight: 700; border-bottom-width: 2px; }
+        tfoot td {
+            font-weight: 700;
+            background-color: rgba(113, 75, 103, 0.12);
+            border-bottom: none;
+        }
+        tfoot .o_sd_sticky { background-color: #ece5ea; }
+        .o_sd_zero { color: $text-muted; opacity: 0.5; }
+    }
+    .o_sd_flow {
+        td:nth-child(3) { text-align: left; }
+        .o_sd_arrow { text-align: center; color: #714b67; width: 40px; }
+    }
+    .o_sd_badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .o_sd_badge_earning { background-color: rgba(32, 164, 100, 0.15); color: #13804b; }
+    .o_sd_badge_deduction { background-color: rgba(217, 83, 79, 0.15); color: #b53a36; }
+
+    .o_sd_entry {
+        margin-bottom: 18px;
+        .o_sd_table { font-size: 0.88rem; }
+        .o_sd_journal {
+            td:nth-child(2), td:nth-child(3), td:nth-child(4) { text-align: left; }
+            th:nth-child(2), th:nth-child(3), th:nth-child(4) { text-align: left; }
+            .o_sd_payable td { font-weight: 700; background-color: rgba(46, 134, 222, 0.08); }
+        }
+    }
+    .o_sd_entry_head {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 8px 4px;
+        border-left: 4px solid #714b67;
+        padding-left: 10px;
+        margin-bottom: 6px;
+        &.o_sd_entry_earning { border-left-color: #20a464; }
+        &.o_sd_entry_deduction { border-left-color: #d9534f; }
+    }
+    .o_sd_entry_no {
+        width: 26px;
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: #714b67;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.8rem;
+    }
+    .o_sd_entry_name { font-weight: 700; font-size: 1.05rem; }
+    .o_sd_entry_remark { color: $text-muted; }
+    .o_sd_entry_status {
+        margin-left: auto;
+        font-weight: 600;
+        &.o_sd_ok { color: #20a464; }
+        &.o_sd_ko { color: #d9534f; }
+    }
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_salary_rule_form_salary_distribution" model="ir.ui.view">
+        <field name="name">hr.salary.rule.form.salary.distribution</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_rule_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="salary_distribution" string="Distribution">
+                    <group>
+                        <group>
+                            <field name="dist_type"/>
+                        </group>
+                        <group invisible="dist_type == 'none'">
+                            <field name="dist_gl_code" placeholder="e.g. 601110"/>
+                            <field name="dist_gl_name" placeholder="e.g. Basic Salary"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_salary_rule_tree_salary_distribution" model="ir.ui.view">
+        <field name="name">hr.salary.rule.tree.salary.distribution</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="mode">primary</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="0" default_order="struct_id, sequence">
+                <field name="struct_id" readonly="1"/>
+                <field name="sequence" readonly="1" optional="hide"/>
+                <field name="name" readonly="1"/>
+                <field name="code" readonly="1"/>
+                <field name="category_id" readonly="1"/>
+                <field name="dist_type" decoration-muted="dist_type == 'none'"/>
+                <field name="dist_gl_code"/>
+                <field name="dist_gl_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_salary_rule_distribution" model="ir.actions.act_window">
+        <field name="name">Salary Rule Accounts</field>
+        <field name="res_model">hr.salary.rule</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="hr_salary_rule_tree_salary_distribution"/>
+        <field name="context">{'group_by': 'struct_id'}</field>
+    </record>
+
+    <record id="hr_payroll_structure_form_salary_distribution" model="ir.ui.view">
+        <field name="name">hr.payroll.structure.form.salary.distribution</field>
+        <field name="model">hr.payroll.structure</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_employee_grade_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='salary_details']" position="inside">
+                <field name="dist_payable_gl_code" placeholder="e.g. 205410"/>
+                <field name="dist_payable_gl_name" placeholder="e.g. Staff Salary Payable"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_employee_salary_distribution_hr_user,hr.employee.salary.distribution.hr.user,model_hr_employee_salary_distribution,hr.group_hr_user,1,1,1,1
+access_salary_distribution_payroll_user,salary.distribution.payroll.user,model_salary_distribution,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_salary_distribution_line_payroll_user,salary.distribution.line.payroll.user,model_salary_distribution_line,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_salary_distribution_journal_payroll_user,salary.distribution.journal.payroll.user,model_salary_distribution_journal,hr_payroll.group_hr_payroll_user,1,1,1,1
