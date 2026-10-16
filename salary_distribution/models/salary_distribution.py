@@ -89,7 +89,19 @@ class SalaryDistribution(models.Model):
         return True
 
     def action_validate(self):
-        self.filtered(lambda r: r.state == "computed").write({"state": "validated"})
+        for rec in self.filtered(lambda r: r.state == "computed"):
+            missing = rec.journal_line_ids.filtered("missing_account")
+            if missing:
+                raise UserError(_(
+                    "Some journal lines have no GL Account Code or SYS Code:\n%s\n\nSet them on the salary rule "
+                    "(or its Department Exceptions) or on the salary structure for the payable, then Recompute.",
+                    "\n".join(sorted({
+                        "- %s / %s" % (line.salary_rule_id.name,
+                                       _("Payable") if line.is_payable else self._department_label(line.department_id))
+                        for line in missing
+                    })),
+                ))
+            rec.state = "validated"
 
     def action_reset_draft(self):
         self.line_ids.unlink()
@@ -210,16 +222,22 @@ class SalaryDistribution(models.Model):
             total = sum(dept_amounts.values())
             structure = rule.struct_id
             payable_vals = {
-                "gl_code": structure.dist_payable_gl_code or "",
-                "gl_name": structure.dist_payable_gl_name or _("Staff Salary Payable"),
+                **self._account_vals(
+                    structure.dist_payable_gl_code,
+                    structure.dist_payable_sys_code,
+                    structure.dist_payable_gl_name or _("Staff Salary Payable"),
+                ),
+                "project_code": structure.dist_payable_project_code or "",
+                "sbu_code": structure.dist_payable_sbu_code or "",
                 "is_payable": True,
                 **self._debit_credit(total, debit_side=dist_type == "deduction"),
             }
             department_vals = []
             for department, amount in dept_amounts.items():
                 department_vals.append({
-                    "gl_code": department.dist_gl_code or rule.dist_gl_code or "",
-                    "gl_name": department.dist_gl_name or rule.dist_gl_name or rule.name,
+                    **self._account_vals(
+                        *rule._get_distribution_account(department), rule._get_distribution_entry_name(department)
+                    ),
                     "department_id": department.id,
                     "project_code": department.dist_project_code or department.name or UNDEFINED_DEPARTMENT,
                     "sbu_code": department.dist_sbu_code or "",
@@ -239,6 +257,16 @@ class SalaryDistribution(models.Model):
         return vals_list
 
     @api.model
+    def _account_vals(self, gl_code, sys_code, gl_name):
+        # both codes are required to create the journal entry in SAP B1
+        return {
+            "gl_code": (gl_code or "").strip(),
+            "sys_code": (sys_code or "").strip(),
+            "gl_name": gl_name,
+            "missing_account": not (gl_code and gl_code.strip() and sys_code and sys_code.strip()),
+        }
+
+    @api.model
     def _debit_credit(self, amount, debit_side):
         # a negative amount goes to the opposite side
         if amount < 0:
@@ -247,7 +275,7 @@ class SalaryDistribution(models.Model):
 
     def _get_rule_department_amounts(self):
         """Return [(rule, dist_type, {department: amount})] ordered by rule sequence
-        with departments ordered by name."""
+        with departments ordered by their journal sequence."""
         self.ensure_one()
         grouped = defaultdict(lambda: defaultdict(float))
         types = {}
@@ -257,13 +285,13 @@ class SalaryDistribution(models.Model):
         result = []
         for rule in sorted(grouped, key=lambda r: (types[r] != "earning", r.sequence, r.id)):
             amounts = grouped[rule]
-            ordered = dict(sorted(amounts.items(), key=lambda kv: self._department_label(kv[0])))
+            ordered = dict(sorted(amounts.items(), key=lambda kv: self._department_order(kv[0])))
             result.append((rule, types[rule], ordered))
         return result
 
     def _get_departments(self):
         departments = self.line_ids.mapped("department_id")
-        result = sorted(departments, key=self._department_label)
+        result = sorted(departments, key=self._department_order)
         if any(not line.department_id for line in self.line_ids):
             result.append(self.env["hr.department"])
         return result
@@ -271,6 +299,11 @@ class SalaryDistribution(models.Model):
     @api.model
     def _department_label(self, department):
         return department.name or UNDEFINED_DEPARTMENT
+
+    @api.model
+    def _department_order(self, department):
+        # departments without a record (undefined) go last
+        return (not department, department.dist_sequence, self._department_label(department))
 
     def _get_reallocation_flow(self):
         flow = defaultdict(lambda: {"amount": 0.0, "employees": set()})
@@ -378,7 +411,8 @@ class SalaryDistribution(models.Model):
         type_labels = dict(self.env["salary.distribution.journal"]._fields["dist_type"].selection)
         for index, (rule, lines) in enumerate(by_rule.items(), start=1):
             debit, credit = sum(lines.mapped("debit")), sum(lines.mapped("credit"))
-            balanced = self.currency_id.is_zero(debit - credit)
+            missing = any(lines.mapped("missing_account"))
+            balanced = self.currency_id.is_zero(debit - credit) and not missing
             dist_type = lines[0].dist_type
             html += Markup(
                 '<div class="o_sd_entry"><div class="o_sd_entry_head o_sd_entry_%s">'
@@ -390,22 +424,25 @@ class SalaryDistribution(models.Model):
                 dist_type, index, rule.name, dist_type, type_labels.get(dist_type, ""), lines[0].remarks,
                 "o_sd_ok" if balanced else "o_sd_ko",
                 "fa-check-circle" if balanced else "fa-exclamation-triangle",
-                _("Balanced") if balanced else _("Not Balanced"),
+                _("Missing Account Code") if missing else _("Balanced") if balanced else _("Not Balanced"),
             )
             html += Markup(
                 '<div class="o_sd_scroll"><table class="o_sd_table o_sd_journal"><thead><tr>'
-                '<th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>'
-            ) % (_("G/L Code"), _("G/L Name"), _("Project"), _("SBU"), _("Debit"), _("Credit"))
+                '<th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>'
+            ) % (_("GL Account Code"), _("SYS Code"), _("Entry Name"), _("Debit"), _("Credit"),
+                 _("Project"), _("SBU"))
             for line in lines:
+                css = "o_sd_missing" if line.missing_account else "o_sd_payable" if line.is_payable else ""
                 html += Markup(
-                    '<tr class="%s"><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>'
+                    '<tr class="%s"><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>'
                 ) % (
-                    "o_sd_payable" if line.is_payable else "",
-                    line.gl_code or "", line.gl_name or "", line.project_code or "", line.sbu_code or "",
-                    self._fmt(line.debit), self._fmt(line.credit),
+                    css, line.gl_code or _("Missing"), line.sys_code or _("Missing"),
+                    line.gl_name or "", self._fmt(line.debit), self._fmt(line.credit),
+                    line.project_code or "", line.sbu_code or "",
                 )
             html += Markup(
-                '</tbody><tfoot><tr><td colspan="4">%s</td><td>%s</td><td>%s</td></tr></tfoot></table></div></div>'
+                '</tbody><tfoot><tr><td colspan="3">%s</td><td>%s</td><td>%s</td><td colspan="2"></td></tr>'
+                '</tfoot></table></div></div>'
             ) % (_("Total"), self._fmt(debit, False), self._fmt(credit, False))
         html += Markup("</div>")
         return html
@@ -427,38 +464,51 @@ class SalaryDistribution(models.Model):
 
         # Journal entries, laid out like the accounting salary sheet
         sheet = workbook.add_worksheet(_("Journal Entries"))
-        sheet.set_column(0, 0, 14)
-        sheet.set_column(1, 1, 36)
-        sheet.set_column(2, 3, 16)
-        sheet.set_column(4, 4, 40)
-        sheet.set_column(5, 6, 12)
+        missing_fmt = workbook.add_format({"border": 1, "font_color": "#B53A36", "bold": True})
+        sheet.set_column(0, 0, 16)
+        sheet.set_column(1, 1, 20)
+        sheet.set_column(2, 2, 36)
+        sheet.set_column(3, 4, 16)
+        sheet.set_column(5, 5, 40)
+        sheet.set_column(6, 7, 12)
         sheet.write(0, 0, "%s (%s - %s)" % (self.name, self.date_start or "", self.date_end or ""), title)
         row = 2
         by_rule = defaultdict(lambda: self.env["salary.distribution.journal"])
         for line in self.journal_line_ids:
             by_rule[line.salary_rule_id] |= line
         for index, (rule, lines) in enumerate(by_rule.items(), start=1):
-            sheet.merge_range(row, 0, row, 6, "%s. %s" % (index, rule.name), section)
+            sheet.merge_range(row, 0, row, 7, "%s. %s" % (index, rule.name), section)
             row += 1
-            for col, label in enumerate([_("G/L Acct Code"), _("G/L Acct Name"), _("Debit"), _("Credit"),
-                                         _("Remarks"), _("Project"), _("SBU")]):
+            for col, label in enumerate([_("GL Account Code"), _("SYS Code"), _("Entry Name"),
+                                         _("Debit"), _("Credit"), _("Remarks"), _("Project"), _("SBU")]):
                 sheet.write(row, col, label, head)
             row += 1
             for line in lines:
-                sheet.write(row, 0, line.gl_code or "", text)
-                sheet.write(row, 1, line.gl_name or "", text)
-                for col, amount in ((2, line.debit), (3, line.credit)):
+                code = line.gl_code or ""
+                if not code:
+                    sheet.write(row, 0, _("Missing"), missing_fmt)
+                elif code.isdigit():
+                    # numeric GL codes are written as numbers, like the accounting sheet
+                    sheet.write_number(row, 0, int(code), text)
+                else:
+                    sheet.write(row, 0, code, text)
+                if line.sys_code:
+                    sheet.write(row, 1, line.sys_code, text)
+                else:
+                    sheet.write(row, 1, _("Missing"), missing_fmt)
+                sheet.write(row, 2, line.gl_name or "", text)
+                for col, amount in ((3, line.debit), (4, line.credit)):
                     if amount:
                         sheet.write_number(row, col, amount, money)
                     else:
                         sheet.write(row, col, "", text)
-                sheet.write(row, 4, line.remarks or "", text)
-                sheet.write(row, 5, line.project_code or "", text)
-                sheet.write(row, 6, line.sbu_code or "", text)
+                sheet.write(row, 5, line.remarks or "", text)
+                sheet.write(row, 6, line.project_code or "", text)
+                sheet.write_string(row, 7, line.sbu_code or "", text)
                 row += 1
-            sheet.write(row, 1, _("Total"), bold)
-            sheet.write_number(row, 2, sum(lines.mapped("debit")), money_bold)
-            sheet.write_number(row, 3, sum(lines.mapped("credit")), money_bold)
+            sheet.write(row, 2, _("Total"), bold)
+            sheet.write_number(row, 3, sum(lines.mapped("debit")), money_bold)
+            sheet.write_number(row, 4, sum(lines.mapped("credit")), money_bold)
             row += 2
 
         # Rule x department matrix

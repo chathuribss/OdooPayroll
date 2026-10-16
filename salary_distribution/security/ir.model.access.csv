@@ -7,3 +7,4 @@ access_salary_distribution_rule_line_payroll_user,salary.distribution.rule.line.
 access_salary_distribution_payroll_user,salary.distribution.payroll.user,model_salary_distribution,hr_payroll.group_hr_payroll_user,1,1,1,1
 access_salary_distribution_line_payroll_user,salary.distribution.line.payroll.user,model_salary_distribution_line,hr_payroll.group_hr_payroll_user,1,1,1,1
 access_salary_distribution_journal_payroll_user,salary.distribution.journal.payroll.user,model_salary_distribution_journal,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_hr_salary_rule_department_account_payroll_user,hr.salary.rule.department.account.payroll.user,model_hr_salary_rule_department_account,hr_payroll.group_hr_payroll_user,1,1,1,1

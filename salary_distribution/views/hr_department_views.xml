@@ -10,10 +10,7 @@
                     <group>
                         <field name="dist_project_code" placeholder="e.g. ADMIN"/>
                         <field name="dist_sbu_code" placeholder="e.g. 0010"/>
-                    </group>
-                    <group>
-                        <field name="dist_gl_code" placeholder="e.g. 105618"/>
-                        <field name="dist_gl_name" placeholder="e.g. PBSS SMB (Pvt) Ltd"/>
+                        <field name="dist_sequence"/>
                     </group>
                 </group>
             </xpath>
@@ -26,13 +23,13 @@
         <field name="mode">primary</field>
         <field name="priority">99</field>
         <field name="arch" type="xml">
-            <tree editable="bottom" create="0">
-                <field name="name" readonly="1"/>
+            <tree editable="bottom" default_order="dist_sequence, name">
+                <field name="dist_sequence" widget="handle"/>
+                <field name="name" readonly="id"/>
                 <field name="parent_id" readonly="1" optional="hide"/>
                 <field name="dist_project_code"/>
                 <field name="dist_sbu_code"/>
-                <field name="dist_gl_code"/>
-                <field name="dist_gl_name"/>
+                <field name="company_id" column_invisible="True"/>
             </tree>
         </field>
     </record>
@@ -42,5 +39,10 @@
         <field name="res_model">hr.department</field>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="hr_department_view_tree_salary_distribution"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No department</p>
+            <p>Set the Project and SBU sent with the journal lines and drag the lines to set their order
+                (ADMIN, CLINF, PCSUP ...).</p>
+        </field>
     </record>
 </odoo>

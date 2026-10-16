@@ -46,8 +46,12 @@ class SalaryDistributionJournal(models.Model):
     sequence = fields.Integer()
     salary_rule_id = fields.Many2one("hr.salary.rule", string="Journal Entry")
     dist_type = fields.Selection(DIST_TYPES, string="Type")
-    gl_code = fields.Char(string="G/L Code")
-    gl_name = fields.Char(string="G/L Name")
+    gl_code = fields.Char(string="GL Account Code")
+    sys_code = fields.Char(string="SYS Code")
+    gl_name = fields.Char(string="Entry Name", help="Department + salary rule, e.g. PBSS SMB Basic Salary.")
+    missing_account = fields.Boolean(
+        string="Missing Account", help="The GL Account Code or the SYS Code is not configured."
+    )
     debit = fields.Monetary(currency_field="currency_id")
     credit = fields.Monetary(currency_field="currency_id")
     remarks = fields.Char()

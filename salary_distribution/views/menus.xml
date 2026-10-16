@@ -46,4 +46,10 @@
               parent="menu_salary_distribution_config"
               action="action_department_distribution_codes"
               sequence="20"/>
+
+    <menuitem id="menu_salary_distribution_payable"
+              name="Payable Accounts"
+              parent="menu_salary_distribution_config"
+              action="action_payroll_structure_distribution"
+              sequence="40"/>
 </odoo>
