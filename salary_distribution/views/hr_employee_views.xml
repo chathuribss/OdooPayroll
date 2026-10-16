@@ -8,9 +8,25 @@
             <xpath expr="//notebook" position="inside">
                 <page name="salary_distribution" string="Salary Distribution" groups="hr.group_hr_user">
                     <div class="alert alert-info mb-3" role="status">
-                        Define the departments that share this employee's salary cost.
-                        The remaining percentage stays with the employee's own department.
+                        Add one or more <b>Distribution Rules</b> and/or <b>Employee Specific</b> departments.
+                        All of them are applied together (maximum 100% in total);
+                        the remaining percentage stays with the employee's own department.
                     </div>
+                    <group>
+                        <field name="salary_distribution_rule_ids" widget="many2many_tags"
+                               options="{'no_quick_create': True}" placeholder="Select distribution rules..."/>
+                    </group>
+                    <div invisible="not salary_distribution_rule_ids">
+                        <separator string="Rule Departments"/>
+                        <field name="salary_distribution_rule_line_ids" readonly="1" nolabel="1">
+                            <tree>
+                                <field name="rule_id"/>
+                                <field name="department_id"/>
+                                <field name="percentage" sum="Total"/>
+                            </tree>
+                        </field>
+                    </div>
+                    <separator string="Employee Specific Departments"/>
                     <field name="salary_distribution_ids">
                         <tree editable="bottom">
                             <field name="sequence" widget="handle"/>

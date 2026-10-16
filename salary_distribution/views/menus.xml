@@ -18,6 +18,12 @@
               action="action_salary_distribution_line"
               sequence="20"/>
 
+    <menuitem id="menu_salary_distribution_rule"
+              name="Distribution Rules"
+              parent="menu_salary_distribution_root"
+              action="action_salary_distribution_rule"
+              sequence="25"/>
+
     <menuitem id="menu_salary_distribution_employee"
               name="Employee Allocations"
               parent="menu_salary_distribution_root"

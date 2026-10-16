@@ -21,6 +21,11 @@ class SalaryDistributionLine(models.Model):
     dist_type = fields.Selection(DIST_TYPES, string="Type", required=True)
     percentage = fields.Float(string="Share (%)", digits=(16, 2), group_operator=False)
     amount = fields.Monetary(string="Amount", currency_field="currency_id")
+    distribution_source = fields.Selection(
+        [("custom", "Employee Specific"), ("rule", "Distribution Rule"), ("none", "Own Department")],
+        string="Source",
+    )
+    distribution_rule_id = fields.Many2one("salary.distribution.rule", string="Distribution Rule", ondelete="set null")
     is_reallocated = fields.Boolean(
         string="Re-allocated", help="Amount moved from the employee's department to another department."
     )

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="salary_distribution_rule_view_form" model="ir.ui.view">
+        <field name="name">salary.distribution.rule.form</field>
+        <field name="model">salary.distribution.rule</field>
+        <field name="arch" type="xml">
+            <form string="Distribution Rule">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Drivers Distribution"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="distributed_percentage"/>
+                            <field name="home_percentage" decoration-danger="home_percentage &lt; 0" class="fw-bold"/>
+                        </group>
+                        <group>
+                            <field name="employee_count"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="status">
+                        The percentages below are charged to each department; the remaining percentage
+                        stays with the own department of every employee using this rule.
+                    </div>
+                    <notebook>
+                        <page name="departments" string="Departments">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="department_id" options="{'no_create': True}"/>
+                                    <field name="percentage" sum="Total"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="employees" string="Employees">
+                            <field name="employee_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                    <field name="job_id"/>
+                                    <field name="salary_distribution_rule_ids" widget="many2many_tags" string="All Rules"/>
+                                    <field name="salary_distributed_percentage" string="Total Distributed (%)"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="note" string="Notes">
+                            <field name="note" placeholder="Internal notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="salary_distribution_rule_view_tree" model="ir.ui.view">
+        <field name="name">salary.distribution.rule.tree</field>
+        <field name="model">salary.distribution.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="line_ids" widget="many2many_tags" string="Departments"/>
+                <field name="distributed_percentage"/>
+                <field name="home_percentage"/>
+                <field name="employee_count"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="salary_distribution_rule_view_search" model="ir.ui.view">
+        <field name="name">salary.distribution.rule.search</field>
+        <field name="model">salary.distribution.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="line_ids" string="Department" filter_domain="[('line_ids.department_id', 'ilike', self)]"/>
+                <field name="employee_ids" string="Employee"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_salary_distribution_rule" model="ir.actions.act_window">
+        <field name="name">Distribution Rules</field>
+        <field name="res_model">salary.distribution.rule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="salary_distribution_rule_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a distribution rule</p>
+            <p>e.g. <b>Drivers</b>: IT and Cloud 10%, Development 20% — the remaining 70% stays with
+                the Drivers department. Then add the employees who follow this rule.</p>
+        </field>
+    </record>
+</odoo>

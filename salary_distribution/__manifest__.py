@@ -20,6 +20,7 @@ Salary Cost Distribution
     "depends": ["hr", "hr_payroll"],
     "data": [
         "security/ir.model.access.csv",
+        "views/salary_distribution_rule_views.xml",
         "views/hr_employee_views.xml",
         "views/hr_department_views.xml",
         "views/hr_payroll_views.xml",

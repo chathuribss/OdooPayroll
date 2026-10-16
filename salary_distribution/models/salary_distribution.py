@@ -151,8 +151,8 @@ class SalaryDistribution(models.Model):
         for slip in slips:
             employee = slip.employee_id
             home_department = employee.department_id
-            splits = [(d.department_id, d.percentage) for d in employee.sudo().salary_distribution_ids]
-            home_percentage = 100.0 - sum(pct for _dept, pct in splits)
+            splits = employee._get_salary_distribution_splits()
+            home_percentage = 100.0 - sum(split[1] for split in splits)
             for payslip_line in slip.line_ids:
                 rule = payslip_line.salary_rule_id
                 if rule not in rule_types:
@@ -170,7 +170,7 @@ class SalaryDistribution(models.Model):
                     "dist_type": dist_type,
                 }
                 allocated = 0.0
-                for department, percentage in splits:
+                for department, percentage, dist_rule in splits:
                     part = currency.round(amount * percentage / 100.0)
                     if currency.is_zero(part):
                         continue
@@ -181,6 +181,8 @@ class SalaryDistribution(models.Model):
                         percentage=percentage,
                         amount=part,
                         is_reallocated=department != home_department,
+                        distribution_source="rule" if dist_rule else "custom",
+                        distribution_rule_id=dist_rule.id if dist_rule else False,
                     ))
                 # the remainder absorbs rounding so the employee total always matches the payslip
                 remainder = currency.round(amount - allocated)
@@ -191,6 +193,7 @@ class SalaryDistribution(models.Model):
                         percentage=home_percentage,
                         amount=remainder,
                         is_reallocated=False,
+                        distribution_source="none",
                     ))
         return vals_list
 

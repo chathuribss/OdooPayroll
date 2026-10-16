@@ -14,6 +14,8 @@
                 <field name="dist_type" widget="badge"
                        decoration-success="dist_type == 'earning'" decoration-danger="dist_type == 'deduction'"/>
                 <field name="percentage"/>
+                <field name="distribution_source" optional="show"/>
+                <field name="distribution_rule_id" optional="show"/>
                 <field name="is_reallocated" optional="show"/>
                 <field name="amount" sum="Total"/>
                 <field name="currency_id" column_invisible="True"/>
@@ -55,6 +57,7 @@
                 <field name="department_id"/>
                 <field name="home_department_id"/>
                 <field name="salary_rule_id"/>
+                <field name="distribution_rule_id"/>
                 <field name="distribution_id"/>
                 <field name="batch_id"/>
                 <filter name="earning" string="Earnings" domain="[('dist_type', '=', 'earning')]"/>
@@ -69,6 +72,7 @@
                     <filter name="group_home_department" string="Employee Department" context="{'group_by': 'home_department_id'}"/>
                     <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
                     <filter name="group_type" string="Type" context="{'group_by': 'dist_type'}"/>
+                    <filter name="group_dist_rule" string="Distribution Rule" context="{'group_by': 'distribution_rule_id'}"/>
                     <filter name="group_distribution" string="Distribution" context="{'group_by': 'distribution_id'}"/>
                     <filter name="group_period" string="Period" context="{'group_by': 'date_end:month'}"/>
                 </group>
